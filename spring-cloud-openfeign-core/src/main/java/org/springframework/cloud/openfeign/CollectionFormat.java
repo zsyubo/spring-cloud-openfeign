@@ -22,6 +22,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * 表示在处理被注释的方法时应该使用哪种集合格式。
+ *
  * Indicates which collection format should be used while processing the annotated method.
  *
  * @author Olga Maciaszek-Sharma

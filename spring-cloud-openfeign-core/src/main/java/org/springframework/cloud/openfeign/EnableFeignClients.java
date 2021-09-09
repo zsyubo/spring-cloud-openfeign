@@ -25,6 +25,8 @@ import java.lang.annotation.Target;
 import org.springframework.context.annotation.Import;
 
 /**
+ * 扫描那些声明自己是feign的接口（通过FeignClient @FeignClient）。配置组件扫描指令，以便与org.springframework.context.annotation.Configuration @Configuration类一起使用。
+ * <p></p>
  * Scans for interfaces that declare they are feign clients (via
  * {@link org.springframework.cloud.openfeign.FeignClient} <code>@FeignClient</code>).
  * Configures component scanning directives for use with
@@ -71,6 +73,9 @@ public @interface EnableFeignClients {
 	Class<?>[] basePackageClasses() default {};
 
 	/**
+	 * 所有feign客户端的自定义@Configuration。可以包含组成客户端的各个部分的覆盖@Bean定义，例如feign.codec.Decoder、feign.codec.Encoder、feign.Contract.Encoder。
+	 *
+	 * <p></p>
 	 * A custom <code>@Configuration</code> for all feign clients. Can contain override
 	 * <code>@Bean</code> definition for the pieces that make up the client, for instance
 	 * {@link feign.codec.Decoder}, {@link feign.codec.Encoder}, {@link feign.Contract}.
@@ -81,6 +86,8 @@ public @interface EnableFeignClients {
 	Class<?>[] defaultConfiguration() default {};
 
 	/**
+	 * 带有@FeignClient注释的类的列表。如果不是空，则禁用classpath扫描。
+	 * <p></p>
 	 * List of classes annotated with @FeignClient. If not empty, disables classpath
 	 * scanning.
 	 * @return list of FeignClient classes

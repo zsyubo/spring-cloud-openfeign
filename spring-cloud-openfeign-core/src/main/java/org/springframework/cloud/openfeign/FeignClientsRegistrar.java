@@ -157,11 +157,15 @@ class FeignClientsRegistrar implements ImportBeanDefinitionRegistrar, ResourceLo
 	}
 
 	public void registerFeignClients(AnnotationMetadata metadata, BeanDefinitionRegistry registry) {
+		// 去扫描feign客户端
 
+		// 这里面存的是@Feign客户端的注解
 		LinkedHashSet<BeanDefinition> candidateComponents = new LinkedHashSet<>();
+
 		Map<String, Object> attrs = metadata.getAnnotationAttributes(EnableFeignClients.class.getName());
 		final Class<?>[] clients = attrs == null ? null : (Class<?>[]) attrs.get("clients");
 		if (clients == null || clients.length == 0) {
+			//学到了 还可以这样筛选出自己感兴趣的
 			ClassPathScanningCandidateComponentProvider scanner = getScanner();
 			scanner.setResourceLoader(this.resourceLoader);
 			scanner.addIncludeFilter(new AnnotationTypeFilter(FeignClient.class));
@@ -175,7 +179,7 @@ class FeignClientsRegistrar implements ImportBeanDefinitionRegistrar, ResourceLo
 				candidateComponents.add(new AnnotatedGenericBeanDefinition(clazz));
 			}
 		}
-
+		// 去处理Feign client接口
 		for (BeanDefinition candidateComponent : candidateComponents) {
 			if (candidateComponent instanceof AnnotatedBeanDefinition) {
 				// verify annotated class is an interface
@@ -186,9 +190,10 @@ class FeignClientsRegistrar implements ImportBeanDefinitionRegistrar, ResourceLo
 				Map<String, Object> attributes = annotationMetadata
 						.getAnnotationAttributes(FeignClient.class.getCanonicalName());
 
+				// 这是准备干撒？todo 看不懂
 				String name = getClientName(attributes);
 				registerClientConfiguration(registry, name, attributes.get("configuration"));
-
+				// 重点来了
 				registerFeignClient(registry, annotationMetadata, attributes);
 			}
 		}
@@ -202,6 +207,8 @@ class FeignClientsRegistrar implements ImportBeanDefinitionRegistrar, ResourceLo
 				? (ConfigurableBeanFactory) registry : null;
 		String contextId = getContextId(beanFactory, attributes);
 		String name = getName(attributes);
+
+		// FactoryBean
 		FeignClientFactoryBean factoryBean = new FeignClientFactoryBean();
 		factoryBean.setBeanFactory(beanFactory);
 		factoryBean.setName(name);

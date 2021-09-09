@@ -331,8 +331,9 @@ public class FeignClientFactoryBean
 		FeignContext context = beanFactory != null ? beanFactory.getBean(FeignContext.class)
 				: applicationContext.getBean(FeignContext.class);
 		Feign.Builder builder = feign(context);
-
+		// 如果不是直接指定了url调用，那么启动负载均衡器
 		if (!StringUtils.hasText(url)) {
+			// 还可以http开头
 			if (!name.startsWith("http")) {
 				url = "http://" + name;
 			}

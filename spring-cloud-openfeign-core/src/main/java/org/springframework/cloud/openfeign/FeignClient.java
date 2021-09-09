@@ -26,6 +26,8 @@ import java.lang.annotation.Target;
 import org.springframework.core.annotation.AliasFor;
 
 /**
+ * 接口的注解，声明应该创建一个具有该接口的REST客户端（例如，用于自动连接到另一个组件）。如果SC LoadBalancer是可用的，它将被用来平衡后端请求，负载平衡器可以使用与feign客户端相同的名称（即值）进行配置。
+ *
  * Annotation for interfaces declaring that a REST client with that interface should be
  * created (e.g. for autowiring into another component). If SC LoadBalancer is available
  * it will be used to load balance the backend requests, and the load balancer can be
@@ -50,6 +52,9 @@ public @interface FeignClient {
 	String value() default "";
 
 	/**
+	 * 如果存在的话，这将被用作Bean的名字而不是name，但不会被用作服务id。
+	 * 就相当于别名
+	 * <p></p>
 	 * This will be used as the bean name instead of name if present, but will not be used
 	 * as a service id.
 	 * @return bean name instead of name if present
@@ -58,7 +63,7 @@ public @interface FeignClient {
 
 	/**
 	 * @return The service id with optional protocol prefix. Synonym for {@link #value()
-	 * value}.
+	 * value}.  带有可选的协议前缀的服务ID。值的同义词。
 	 */
 	@AliasFor("value")
 	String name() default "";
@@ -69,6 +74,8 @@ public @interface FeignClient {
 	String qualifier() default "";
 
 	/**
+	 * 调用的URL
+	 *
 	 * @return an absolute URL or resolvable hostname (the protocol is optional).
 	 */
 	String url() default "";
