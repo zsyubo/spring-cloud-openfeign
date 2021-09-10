@@ -202,6 +202,7 @@ class FeignClientsRegistrar implements ImportBeanDefinitionRegistrar, ResourceLo
 	private void registerFeignClient(BeanDefinitionRegistry registry, AnnotationMetadata annotationMetadata,
 			Map<String, Object> attributes) {
 		String className = annotationMetadata.getClassName();
+		// 带有FeignClient的接口类
 		Class clazz = ClassUtils.resolveClassName(className, null);
 		ConfigurableBeanFactory beanFactory = registry instanceof ConfigurableBeanFactory
 				? (ConfigurableBeanFactory) registry : null;

@@ -54,7 +54,7 @@ public @interface FeignClient {
 	/**
 	 * 如果存在的话，这将被用作Bean的名字而不是name，但不会被用作服务id。
 	 * 就相当于别名
-	 * <p></p>
+	 * * <p></p>
 	 * This will be used as the bean name instead of name if present, but will not be used
 	 * as a service id.
 	 * @return bean name instead of name if present
