@@ -24,6 +24,8 @@ import org.springframework.cloud.client.loadbalancer.LoadBalancedRetryFactory;
 import org.springframework.retry.support.RetryTemplate;
 
 /**
+ * 验证RetryTemplate是否在classpath上，LoadBalancedRetryFactory Bean是否存在以及spring.cloud.loadbalancer.retry.enabled是否设置为false的条件。
+ * <p></p>
  * A condition that verifies that {@link RetryTemplate} is on the classpath, a
  * {@link LoadBalancedRetryFactory} bean is present and
  * <code>spring.cloud.loadbalancer.retry.enabled</code> is not set to <code>false</code>.

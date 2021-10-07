@@ -20,16 +20,23 @@ import org.springframework.boot.autoconfigure.condition.AnyNestedCondition;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 
+/**
+ * AnyNestedCondition 会分析 @Conditional，将它们用"OR"进行合并。所以多个条件只要有一个为true就行
+ */
 class FeignCircuitBreakerDisabledConditions extends AnyNestedCondition {
 
 	FeignCircuitBreakerDisabledConditions() {
 		super(ConfigurationPhase.PARSE_CONFIGURATION);
 	}
 
+	/**
+	 * 不存在这个Bean， 这个为true
+	 */
 	@ConditionalOnMissingClass("org.springframework.cloud.client.circuitbreaker.CircuitBreaker")
 	static class CircuitBreakerClassMissing {
 
 	}
+
 
 	@ConditionalOnProperty(value = "feign.circuitbreaker.enabled", havingValue = "false", matchIfMissing = true)
 	static class CircuitBreakerDisabled {

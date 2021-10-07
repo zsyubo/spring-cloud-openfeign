@@ -16,33 +16,14 @@
 
 package org.springframework.cloud.openfeign;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.TimeUnit;
-
-import feign.Client;
-import feign.Contract;
-import feign.ExceptionPropagationPolicy;
-import feign.Feign;
-import feign.Logger;
-import feign.QueryMapEncoder;
-import feign.Request;
-import feign.RequestInterceptor;
-import feign.Retryer;
+import feign.*;
 import feign.Target.HardCodedTarget;
 import feign.codec.Decoder;
 import feign.codec.Encoder;
 import feign.codec.ErrorDecoder;
-
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanFactoryAware;
-import org.springframework.beans.factory.FactoryBean;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+import org.springframework.beans.factory.*;
 import org.springframework.cloud.openfeign.clientconfig.FeignClientConfigurer;
 import org.springframework.cloud.openfeign.loadbalancer.FeignBlockingLoadBalancerClient;
 import org.springframework.context.ApplicationContext;
@@ -50,6 +31,12 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Spencer Gibb
@@ -87,6 +74,7 @@ public class FeignClientFactoryBean
 
 	private BeanFactory beanFactory;
 
+	// 兜底实现
 	private Class<?> fallback = void.class;
 
 	private Class<?> fallbackFactory = void.class;
@@ -307,6 +295,7 @@ public class FeignClientFactoryBean
 	}
 
 	protected <T> T loadBalance(Feign.Builder builder, FeignContext context, HardCodedTarget<T> target) {
+		// 负载均衡client
 		Client client = getOptional(context, Client.class);
 		if (client != null) {
 			builder.client(client);

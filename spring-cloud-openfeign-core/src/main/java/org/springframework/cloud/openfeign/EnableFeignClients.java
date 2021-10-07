@@ -16,13 +16,9 @@
 
 package org.springframework.cloud.openfeign;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
 import org.springframework.context.annotation.Import;
+
+import java.lang.annotation.*;
 
 /**
  * 扫描那些声明自己是feign的接口（通过FeignClient @FeignClient）。配置组件扫描指令，以便与org.springframework.context.annotation.Configuration @Configuration类一起使用。
@@ -52,12 +48,17 @@ public @interface EnableFeignClients {
 	String[] value() default {};
 
 	/**
+	 * 用于扫描带注释组件的基本包。
+	 * value()是该属性的别名(并且与该属性互斥)。
+	 * 使用basePackageClasses()作为基于字符串的包名的类型安全替代。
+	 * <p></p>
 	 * Base packages to scan for annotated components.
 	 * <p>
 	 * {@link #value()} is an alias for (and mutually exclusive with) this attribute.
 	 * <p>
 	 * Use {@link #basePackageClasses()} for a type-safe alternative to String-based
 	 * package names.
+	 *
 	 * @return the array of 'basePackages'.
 	 */
 	String[] basePackages() default {};

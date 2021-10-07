@@ -16,15 +16,6 @@
 
 package org.springframework.cloud.openfeign;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.TimeUnit;
-
-import javax.annotation.PreDestroy;
-
 import com.fasterxml.jackson.databind.Module;
 import feign.Client;
 import feign.Feign;
@@ -39,7 +30,6 @@ import org.apache.http.client.config.RequestConfig;
 import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.impl.client.CloseableHttpClient;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -65,6 +55,14 @@ import org.springframework.context.annotation.Import;
 import org.springframework.security.oauth2.client.OAuth2ClientContext;
 import org.springframework.security.oauth2.client.resource.OAuth2ProtectedResourceDetails;
 
+import javax.annotation.PreDestroy;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
+
 /**
  * @author Spencer Gibb
  * @author Julien Roy
@@ -73,7 +71,7 @@ import org.springframework.security.oauth2.client.resource.OAuth2ProtectedResour
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(Feign.class)
-@EnableConfigurationProperties({ FeignClientProperties.class, FeignHttpClientProperties.class })
+@EnableConfigurationProperties({FeignClientProperties.class, FeignHttpClientProperties.class})
 @Import(DefaultGzipDecoderConfiguration.class)
 public class FeignAutoConfiguration {
 
@@ -110,6 +108,9 @@ public class FeignAutoConfiguration {
 		return new SortJacksonModule();
 	}
 
+	/**
+	 * 默认是进这个
+	 */
 	@Configuration(proxyBeanMethods = false)
 	@Conditional(FeignCircuitBreakerDisabledConditions.class)
 	protected static class DefaultFeignTargeterConfiguration {

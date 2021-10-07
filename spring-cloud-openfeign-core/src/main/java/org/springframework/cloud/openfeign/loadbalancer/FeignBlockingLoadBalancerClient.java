@@ -16,30 +16,21 @@
 
 package org.springframework.cloud.openfeign.loadbalancer;
 
-import java.io.IOException;
-import java.net.URI;
-import java.nio.charset.StandardCharsets;
-import java.util.Set;
-
 import feign.Client;
 import feign.Request;
 import feign.Response;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.cloud.client.ServiceInstance;
-import org.springframework.cloud.client.loadbalancer.CompletionContext;
-import org.springframework.cloud.client.loadbalancer.DefaultRequest;
-import org.springframework.cloud.client.loadbalancer.DefaultResponse;
-import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
-import org.springframework.cloud.client.loadbalancer.LoadBalancerLifecycle;
-import org.springframework.cloud.client.loadbalancer.LoadBalancerLifecycleValidator;
-import org.springframework.cloud.client.loadbalancer.LoadBalancerProperties;
-import org.springframework.cloud.client.loadbalancer.RequestDataContext;
-import org.springframework.cloud.client.loadbalancer.ResponseData;
+import org.springframework.cloud.client.loadbalancer.*;
 import org.springframework.cloud.loadbalancer.support.LoadBalancerClientFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.Assert;
+
+import java.io.IOException;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.util.Set;
 
 import static org.springframework.cloud.openfeign.loadbalancer.LoadBalancerUtils.buildRequestData;
 import static org.springframework.cloud.openfeign.loadbalancer.LoadBalancerUtils.executeWithLoadBalancerLifecycleProcessing;
@@ -76,15 +67,19 @@ public class FeignBlockingLoadBalancerClient implements Client {
 	public Response execute(Request request, Request.Options options) throws IOException {
 		final URI originalUri = URI.create(request.url());
 		String serviceId = originalUri.getHost();
+
 		Assert.state(serviceId != null, "Request URI does not contain a valid hostname: " + originalUri);
 		String hint = getHint(serviceId);
 		DefaultRequest<RequestDataContext> lbRequest = new DefaultRequest<>(
 				new RequestDataContext(buildRequestData(request), hint));
+		// 在负载均衡前后执行操作
 		Set<LoadBalancerLifecycle> supportedLifecycleProcessors = LoadBalancerLifecycleValidator
 				.getSupportedLifecycleProcessors(
 						loadBalancerClientFactory.getInstances(serviceId, LoadBalancerLifecycle.class),
 						RequestDataContext.class, ResponseData.class, ServiceInstance.class);
+		// LoadBalancerLifecycle::onStart
 		supportedLifecycleProcessors.forEach(lifecycle -> lifecycle.onStart(lbRequest));
+		// 执行负载均衡操作
 		ServiceInstance instance = loadBalancerClient.choose(serviceId, lbRequest);
 		org.springframework.cloud.client.loadbalancer.Response<ServiceInstance> lbResponse = new DefaultResponse(
 				instance);

@@ -17,7 +17,6 @@
 package org.springframework.cloud.openfeign.loadbalancer;
 
 import feign.Client;
-
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -32,6 +31,9 @@ import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 
 /**
+ * 默认是这个
+ * 配置实例化一个基于LoadBalancerClient的客户端对象，该对象在引擎盖下使用Client.Default。
+ * <p></p>
  * Configuration instantiating a {@link LoadBalancerClient}-based {@link Client} object
  * that uses {@link Client.Default} under the hood.
  *
