@@ -47,6 +47,7 @@ public class FeignBlockingLoadBalancerClient implements Client {
 
 	private static final Log LOG = LogFactory.getLog(FeignBlockingLoadBalancerClient.class);
 
+	// feign.Client
 	private final Client delegate;
 
 	private final LoadBalancerClient loadBalancerClient;
@@ -94,6 +95,7 @@ public class FeignBlockingLoadBalancerClient implements Client {
 			return Response.builder().request(request).status(HttpStatus.SERVICE_UNAVAILABLE.value())
 					.body(message, StandardCharsets.UTF_8).build();
 		}
+		// 吧url中的服务名替换成真实的调用地址
 		String reconstructedUrl = loadBalancerClient.reconstructURI(instance, originalUri).toString();
 		Request newRequest = buildRequest(request, reconstructedUrl);
 		return executeWithLoadBalancerLifecycleProcessing(delegate, options, newRequest, lbRequest, lbResponse,
