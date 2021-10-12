@@ -97,6 +97,7 @@ public class FeignBlockingLoadBalancerClient implements Client {
 		}
 		// 吧url中的服务名替换成真实的调用地址
 		String reconstructedUrl = loadBalancerClient.reconstructURI(instance, originalUri).toString();
+		// 创建一个Request请求
 		Request newRequest = buildRequest(request, reconstructedUrl);
 		return executeWithLoadBalancerLifecycleProcessing(delegate, options, newRequest, lbRequest, lbResponse,
 				supportedLifecycleProcessors);

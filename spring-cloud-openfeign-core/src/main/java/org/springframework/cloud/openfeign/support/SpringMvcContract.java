@@ -224,17 +224,23 @@ public class SpringMvcContract extends Contract.BaseContract implements Resource
 				&& !methodAnnotation.annotationType().isAnnotationPresent(RequestMapping.class)) {
 			return;
 		}
-
+		// 把注解信息合并成一个,  比如子注解信息合并到父注解：合并必须满足2个要求：
+		// 1. 子注解定义必须加上父注解
+		// 2. 父子注解合并的字段必须一样
+		// 3. 子字段必须加@AliasFor(annotation = 父注解.class)
 		RequestMapping methodMapping = findMergedAnnotation(method, RequestMapping.class);
 		// HTTP Method
 		RequestMethod[] methods = methodMapping.method();
+		// 如果没定义。那就Get请求啰
 		if (methods.length == 0) {
 			methods = new RequestMethod[] { RequestMethod.GET };
 		}
+		// 这地方因为是http client，所以不可能定义多个RequestMethod， 比如同事定义 GET、POST
 		checkOne(method, methods, "method");
 		data.template().method(Request.HttpMethod.valueOf(methods[0].name()));
 
 		// path
+		// 检查是否定义了多个请求路径，在Springmvc中是可以的，但是这是client，所以不可能多个
 		checkAtMostOne(method, methodMapping.value(), "value");
 		if (methodMapping.value().length > 0) {
 			String pathValue = emptyToNull(methodMapping.value()[0]);
@@ -252,12 +258,15 @@ public class SpringMvcContract extends Contract.BaseContract implements Resource
 		}
 
 		// produces
+		// 这是处理请求头Accept 配置
 		parseProduces(data, method, methodMapping);
 
 		// consumes
+		// Content-Type配置
 		parseConsumes(data, method, methodMapping);
 
 		// headers
+		// 其他请求头
 		parseHeaders(data, method, methodMapping);
 
 		data.indexToExpander(new LinkedHashMap<>());
@@ -314,6 +323,7 @@ public class SpringMvcContract extends Contract.BaseContract implements Resource
 	}
 
 	private void parseProduces(MethodMetadata md, Method method, RequestMapping annotation) {
+		// 这是处理请求头
 		String[] serverProduces = annotation.produces();
 		String clientAccepts = serverProduces.length == 0 ? null : emptyToNull(serverProduces[0]);
 		if (clientAccepts != null) {

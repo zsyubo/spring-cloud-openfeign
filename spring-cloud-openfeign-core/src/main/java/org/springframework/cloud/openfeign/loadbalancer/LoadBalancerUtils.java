@@ -51,9 +51,12 @@ final class LoadBalancerUtils {
 			Request feignRequest, org.springframework.cloud.client.loadbalancer.Request lbRequest,
 			org.springframework.cloud.client.loadbalancer.Response<ServiceInstance> lbResponse,
 			Set<LoadBalancerLifecycle> supportedLifecycleProcessors, boolean loadBalanced) throws IOException {
+		// 在请求前搞点事请
 		supportedLifecycleProcessors.forEach(lifecycle -> lifecycle.onStartRequest(lbRequest, lbResponse));
 		try {
+			// 去执行请求啰
 			Response response = feignClient.execute(feignRequest, options);
+			// 如果是负载均衡的
 			if (loadBalanced) {
 				supportedLifecycleProcessors.forEach(
 						lifecycle -> lifecycle.onComplete(new CompletionContext<>(CompletionContext.Status.SUCCESS,
