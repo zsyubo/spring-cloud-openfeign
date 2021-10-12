@@ -111,6 +111,10 @@ public class FeignClientsConfiguration {
 		return encoder;
 	}
 
+	 /**
+	  * todo 这是一个重点，spring注册一个SpringMvcContract，这个里面就是去处理feignClient中的Spring mvc注解的
+	  *
+	  **/
 	@Bean
 	@ConditionalOnMissingBean
 	public Contract feignContract(ConversionService feignConversionService) {

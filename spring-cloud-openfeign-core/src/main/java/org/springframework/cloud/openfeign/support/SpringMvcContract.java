@@ -192,10 +192,11 @@ public class SpringMvcContract extends Contract.BaseContract implements Resource
 	public MethodMetadata parseAndValidateMetadata(Class<?> targetType, Method method) {
 		processedMethods.put(Feign.configKey(targetType, method), method);
 		MethodMetadata md = super.parseAndValidateMetadata(targetType, method);
-
+		// 这地方是类上的，如果类上有RequestMapping，则去处理
 		RequestMapping classAnnotation = findMergedAnnotation(targetType, RequestMapping.class);
 		if (classAnnotation != null) {
 			// produces - use from class annotation only if method has not specified this
+			//            仅当方法未指定此选项时，才使用from类注释
 			if (!md.template().headers().containsKey(ACCEPT)) {
 				parseProduces(md, method, classAnnotation);
 			}
